@@ -2,9 +2,30 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Piwel xar</title>
+    <link rel="stylesheet" href="css/style.css" type="text/css">
 </head>
 <body>
+    <h1 id="state">Connected</h1>
+    <canvas id="pixelGrid" width="1000" height="700">
+    </canvas>
 
+    <div>
+        <div>
+            <input id="x" type="number" placeholder="Coordonnées X">
+            <input id="y" type="number" placeholder="Coordonnées Y">
+            <input id="send" type="button" value="Send">
+        </div>
+        <div class="color-picker">
+            <input type="color" id="color-input">
+            <button id="set-color-button">Set Color</button>
+        </div>
+        <div>
+            <input id="downloadButton" value="Download Image" type="button">
+        </div>
+    </div>
+<footer>
+    <script src="js/index.js"></script>
+</footer>
 </body>
 </html>

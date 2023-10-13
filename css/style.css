@@ -1,0 +1,20 @@
+.color-picker {
+    display: flex;
+    align-items: center;
+}
+
+#color-input {
+    margin-right: 10px;
+}
+
+#set-color-button {
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+#pixelGrid{
+    border: black solid 1px;
+}
