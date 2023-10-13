@@ -4,7 +4,30 @@ const ctx = canvas.getContext('2d');
 
 const rows = canvas.width;
 const columns = canvas.height;
-const pixelSize = 10;
+const pixelSize = 1;
+
+const colorInput = document.getElementById('color-input');
+const setColorButton = document.getElementById('set-color-button');
+
+const x_input = document.getElementById('x');
+const y_input = document.getElementById('y');
+const send_input = document.getElementById('send');
+
+let selectedColor;
+
+setColorButton.addEventListener('click', function() {
+    selectedColor = colorInput.value;
+});
+
+send_input.addEventListener('click', function () {
+   sendFromInput();
+});
+
+function sendFromInput(){
+    const x = x_input.value;
+    const y = y_input.value;
+    sendPixel(x,y, selectedColor);
+}
 
 function drawGrid(){
     for(let row = 0; row < rows; row++){
@@ -21,13 +44,29 @@ function drawPixel(x,y, color){
     ctx.fillRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
 }
 
-drawGrid();
+function sendPixel(x,y,color){
+    const pixel = {
+        x_coordinate : x,
+        y_coordinate : y,
+        color : color
+    }
+
+    const msg = {
+        type : "PIXEL",
+        data : pixel
+    }
+
+    jsonData = JSON.stringify(msg);
+    conn.send(jsonData);
+}
+
+//drawGrid();
 
 canvas.addEventListener('click', function (event){
     const x = Math.floor(event.offsetX / pixelSize);
     const y = Math.floor(event.offsetY / pixelSize);
 
-    drawPixel(x,y, 'FF0000');
+    sendPixel(x,y,selectedColor);
 });
 
 //We use 127.0.0.1 instead of localhost because we have some problem with the web socket
@@ -39,9 +78,21 @@ conn.onopen = function (e){
 }
 
 conn.onmessage = function (e){
+
     const jsonData = JSON.parse(e.data);
-    for (let element of jsonData) {
-        drawPixel(element.x_coordinate, element.y_coordinate, element.color);
+
+    switch (jsonData.type){
+        case "GetAllData":
+            for (let element in jsonData['data']) {
+                const dataElement = jsonData['data'][element];
+                drawPixel(dataElement.x_coordinate, dataElement.y_coordinate, dataElement.color);
+            }
+            break;
+        case "GetCurrentData":
+            //We make another parsing for get the real object value instance
+            let dataElement = JSON.parse(jsonData['data']);
+            drawPixel(dataElement['x_coordinate'], dataElement['y_coordinate'], dataElement['color']);
+            break;
     }
 }
 
