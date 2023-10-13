@@ -13,6 +13,8 @@ const x_input = document.getElementById('x');
 const y_input = document.getElementById('y');
 const send_input = document.getElementById('send');
 
+const downloadButton = document.getElementById('downloadButton');
+
 let selectedColor;
 
 setColorButton.addEventListener('click', function() {
@@ -23,20 +25,23 @@ send_input.addEventListener('click', function () {
    sendFromInput();
 });
 
+downloadButton.addEventListener('click', function (){
+    // Create the image
+    let img = new Image();
+    img.src = canvas.toDataURL('image/png');
+
+    // Create the anchor and pass in href the source of image. And download it by a click on the anchor
+    let a = document.createElement('a');
+    a.href = img.src;
+    a.download = 'pixel_war.png';
+    a.click();
+});
+
 function sendFromInput(){
+    // Get x y position for the pixel from the input
     const x = x_input.value;
     const y = y_input.value;
     sendPixel(x,y, selectedColor);
-}
-
-function drawGrid(){
-    for(let row = 0; row < rows; row++){
-        for(let col = 0; col < columns; col++){
-            const x = col * pixelSize;
-            const y = row * pixelSize;
-            ctx.strokeRect(x,y,pixelSize,pixelSize);
-        }
-    }
 }
 
 function drawPixel(x,y, color){
@@ -45,12 +50,14 @@ function drawPixel(x,y, color){
 }
 
 function sendPixel(x,y,color){
+    // Create JsonObject of the pixel
     const pixel = {
         x_coordinate : x,
         y_coordinate : y,
         color : color
     }
 
+    // Create the type of message
     const msg = {
         type : "PIXEL",
         data : pixel
@@ -59,8 +66,6 @@ function sendPixel(x,y,color){
     jsonData = JSON.stringify(msg);
     conn.send(jsonData);
 }
-
-//drawGrid();
 
 canvas.addEventListener('click', function (event){
     const x = Math.floor(event.offsetX / pixelSize);
