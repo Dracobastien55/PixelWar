@@ -15,7 +15,7 @@ const send_input = document.getElementById('send');
 
 const downloadButton = document.getElementById('downloadButton');
 
-let selectedColor;
+let selectedColor = "#FFFFFF";
 
 setColorButton.addEventListener('click', function() {
     selectedColor = colorInput.value;
