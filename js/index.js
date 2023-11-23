@@ -75,7 +75,7 @@ canvas.addEventListener('click', function (event){
 });
 
 //We use 127.0.0.1 instead of localhost because we have some problem with the web socket
-let conn = new WebSocket('ws://127.0.0.1:8080');
+let conn = new WebSocket('ws://127.0.0.1:3001');
 
 conn.onopen = function (e){
     console.log("Connected");

@@ -1,0 +1,53 @@
+version: '3'
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    networks:
+      pixel-war-network:
+  db:
+    image: mysql:latest
+    container_name: mysql_container-pixel-war
+    networks:
+      pixel-war-network:
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: test
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin-pixel-war
+    networks:
+      pixel-war-network:
+    links:
+      - db
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+    restart: always
+    ports:
+      - "8081:80"
+  app:
+    image: bbu/server-php-pixel-war
+    ports:
+      - "3001:3001"
+    links:
+      - db
+    depends_on:
+      - db
+    networks:
+      pixel-war-network:
+
+volumes:
+  db_data:
+networks:
+  pixel-war-network:
